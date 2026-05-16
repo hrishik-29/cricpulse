@@ -1,7 +1,7 @@
-# CricPulse - HCI Project
+# CricPulse
 
 ## Overview
-CricPulse is a highly interactive application designed with advanced Human-Computer Interaction (HCI) principles in mind. It serves as our final project for the HCI course (Team 12), focusing on delivering an intuitive, accessible, and user-centric experience.
+CricPulse is a highly interactive application designed with advanced Human-Computer Interaction (HCI) principles in mind. It serves as a comprehensive project focusing on delivering an intuitive, accessible, and user-centric experience.
 
 ## Project Structure
 - `cricpulse/`: Contains the source code for the application.
