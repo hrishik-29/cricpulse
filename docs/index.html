@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CricPulse — Live Cricket Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+/* Nav */
+.nav{background:#1e293b;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #334155}
+.nav-logo{font-size:1.2rem;font-weight:700;color:#38bdf8}
+.nav-logo span{color:#f97316}
+.tabs{display:flex;gap:4px}
+.tab{padding:8px 16px;border-radius:8px;border:none;background:transparent;color:#94a3b8;font-size:.85rem;font-weight:500;cursor:pointer;transition:.2s}
+.tab:hover,.tab.active{background:#334155;color:#38bdf8}
+/* Hero */
+.hero{background:linear-gradient(135deg,#1e3a5f,#0c4a6e,#164e63);padding:48px 24px;text-align:center;border-bottom:1px solid #1e3a5f}
+.hero h1{font-size:2.2rem;font-weight:800;margin-bottom:8px;background:linear-gradient(to right,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:#94a3b8;font-size:1rem;max-width:500px;margin:0 auto}
+/* Container */
+.container{max-width:900px;margin:0 auto;padding:24px}
+/* Live Matches */
+.match-card{background:#1e293b;border-radius:16px;padding:24px;margin-bottom:16px;border:1px solid #334155;transition:.2s}
+.match-card:hover{border-color:#38bdf8;transform:translateY(-2px)}
+.match-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.match-status{font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:20px}
+.match-status.live{background:#ef4444;color:#fff;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.match-status.upcoming{background:#334155;color:#94a3b8}
+.match-status.completed{background:#22c55e;color:#fff}
+.match-venue{font-size:.78rem;color:#64748b}
+.teams{display:flex;justify-content:space-around;align-items:center;gap:20px}
+.team{text-align:center;flex:1}
+.team-flag{font-size:2.4rem;margin-bottom:6px;display:block}
+.team-name{font-size:.9rem;font-weight:600;margin-bottom:4px}
+.team-score{font-size:1.3rem;font-weight:800;color:#38bdf8}
+.team-overs{font-size:.75rem;color:#64748b}
+.vs{color:#475569;font-size:.85rem;font-weight:700;padding:0 8px}
+.match-result{text-align:center;margin-top:12px;font-size:.82rem;color:#22c55e;font-weight:500}
+/* Standings */
+.table-wrap{background:#1e293b;border-radius:16px;overflow:hidden;border:1px solid #334155}
+table{width:100%;border-collapse:collapse}
+th{background:#0f172a;padding:12px 16px;text-align:left;font-size:.78rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+td{padding:12px 16px;font-size:.85rem;border-top:1px solid #1e293b}
+tr:hover td{background:#1e293b80}
+.pos{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem}
+.pos-1{background:#f59e0b20;color:#f59e0b}.pos-2{background:#94a3b820;color:#94a3b8}.pos-3{background:#a7550020;color:#d97706}
+.w-badge{background:#22c55e20;color:#22c55e;padding:2px 8px;border-radius:4px;font-size:.75rem;font-weight:600}
+.l-badge{background:#ef444420;color:#ef4444;padding:2px 8px;border-radius:4px;font-size:.75rem;font-weight:600}
+/* Players */
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.player-card{background:#1e293b;border-radius:14px;padding:20px;text-align:center;border:1px solid #334155;transition:.2s}
+.player-card:hover{border-color:#38bdf8;transform:translateY(-2px)}
+.player-avatar{font-size:2.6rem;margin-bottom:8px;display:block}
+.player-name{font-size:.92rem;font-weight:600;margin-bottom:2px}
+.player-team{font-size:.75rem;color:#64748b;margin-bottom:10px}
+.player-stats{display:flex;justify-content:center;gap:16px}
+.stat{text-align:center}
+.stat-val{font-size:1rem;font-weight:700;color:#38bdf8}
+.stat-label{font-size:.65rem;color:#64748b;text-transform:uppercase}
+.player-role{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:10px;background:#334155;color:#94a3b8;margin-bottom:8px}
+/* Section */
+.sec-title{font-size:1.1rem;font-weight:700;margin-bottom:16px;color:#f8fafc}
+@media(max-width:640px){.hero h1{font-size:1.6rem}.teams{flex-direction:column;gap:8px}.tab{padding:6px 10px;font-size:.78rem}.players-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-logo">🏏 Cric<span>Pulse</span></div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('matches',this)">Matches</button>
+    <button class="tab" onclick="showTab('standings',this)">Standings</button>
+    <button class="tab" onclick="showTab('players',this)">Players</button>
+  </div>
+</nav>
+<div class="hero"><h1>🏏 Live Cricket Dashboard</h1><p>Real-time scores, team standings, and player stats from the latest cricket action.</p></div>
+
+<div class="container">
+<div id="t-matches">
+  <h3 class="sec-title">📺 Live & Recent Matches</h3>
+  <div id="matches"></div>
+</div>
+<div id="t-standings" style="display:none">
+  <h3 class="sec-title">🏆 IPL 2025 Standings</h3>
+  <div id="standings"></div>
+</div>
+<div id="t-players" style="display:none">
+  <h3 class="sec-title">⭐ Top Players</h3>
+  <div class="players-grid" id="players"></div>
+</div>
+</div>
+
+<script>
+const matches=[
+{t1:"CSK",t1f:"💛",t1s:"186/4",t1o:"20.0",t2:"MI",t2f:"💙",t2s:"172/8",t2o:"20.0",status:"completed",venue:"Wankhede Stadium, Mumbai",result:"CSK won by 14 runs"},
+{t1:"RCB",t1f:"❤️",t1s:"205/3",t1o:"18.2",t2:"KKR",t2f:"💜",t2s:"198/7",t2o:"20.0",status:"live",venue:"M. Chinnaswamy Stadium, Bangalore",result:"RCB need 12 runs off 10 balls"},
+{t1:"DC",t1f:"🔵",t1s:"156/6",t1o:"20.0",t2:"SRH",t2f:"🧡",t2s:"142/9",t2o:"20.0",status:"completed",venue:"Arun Jaitley Stadium, Delhi",result:"DC won by 14 runs"},
+{t1:"GT",t1f:"🔷",t1s:"—",t1o:"—",t2:"RR",t2f:"💗",t2s:"—",t2o:"—",status:"upcoming",venue:"Narendra Modi Stadium, Ahmedabad",result:"Today, 7:30 PM IST"},
+{t1:"PBKS",t1f:"🔴",t1s:"175/5",t1o:"20.0",t2:"LSG",t2f:"💚",t2s:"178/4",t2o:"19.3",status:"completed",venue:"IS Bindra Stadium, Mohali",result:"LSG won by 6 wickets"}
+];
+const standings=[
+{pos:1,team:"CSK 💛",m:10,w:8,l:2,nrr:"+0.852",pts:16},{pos:2,team:"GT 🔷",m:10,w:7,l:3,nrr:"+0.645",pts:14},{pos:3,team:"RCB ❤️",m:10,w:6,l:4,nrr:"+0.312",pts:12},{pos:4,team:"RR 💗",m:10,w:6,l:4,nrr:"+0.108",pts:12},{pos:5,team:"MI 💙",m:10,w:5,l:5,nrr:"-0.125",pts:10},{pos:6,team:"LSG 💚",m:10,w:5,l:5,nrr:"-0.234",pts:10},{pos:7,team:"DC 🔵",m:10,w:4,l:6,nrr:"-0.356",pts:8},{pos:8,team:"KKR 💜",m:10,w:4,l:6,nrr:"-0.412",pts:8},{pos:9,team:"SRH 🧡",m:10,w:3,l:7,nrr:"-0.578",pts:6},{pos:10,team:"PBKS 🔴",m:10,w:2,l:8,nrr:"-0.912",pts:4}
+];
+const players=[
+{name:"Virat Kohli",team:"RCB",role:"Batsman",avatar:"🏏",runs:523,avg:58.1,sr:142.5},{name:"Jasprit Bumrah",team:"MI",role:"Bowler",avatar:"🔥",wkts:18,econ:6.8,avg:15.2},{name:"MS Dhoni",team:"CSK",role:"WK-Batsman",avatar:"🧤",runs:312,avg:44.6,sr:168.1},{name:"Rashid Khan",team:"GT",role:"Bowler",avatar:"🌪️",wkts:15,econ:6.2,avg:17.8},{name:"Shubman Gill",team:"GT",role:"Batsman",avatar:"⭐",runs:478,avg:53.1,sr:138.7},{name:"Sunil Narine",team:"KKR",role:"All-rounder",avatar:"🎯",runs:345,wkts:12,sr:182.0},{name:"Faf du Plessis",team:"RCB",role:"Batsman",avatar:"🇿🇦",runs:412,avg:45.8,sr:145.2},{name:"Yuzvendra Chahal",team:"RR",role:"Bowler",avatar:"🎩",wkts:16,econ:7.1,avg:16.5},{name:"KL Rahul",team:"LSG",role:"WK-Batsman",avatar:"🎯",runs:398,avg:49.8,sr:131.6},{name:"Hardik Pandya",team:"MI",role:"All-rounder",avatar:"💪",runs:289,wkts:8,sr:155.3},{name:"Rishabh Pant",team:"DC",role:"WK-Batsman",avatar:"🧤",runs:367,avg:40.8,sr:151.2},{name:"Jos Buttler",team:"RR",role:"Batsman",avatar:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",runs:445,avg:55.6,sr:158.1}
+];
+
+function renderMatches(){
+  document.getElementById('matches').innerHTML=matches.map(m=>`<div class="match-card"><div class="match-header"><span class="match-status ${m.status}">${m.status==='live'?'● LIVE':m.status==='upcoming'?'UPCOMING':'COMPLETED'}</span><span class="match-venue">${m.venue}</span></div><div class="teams"><div class="team"><span class="team-flag">${m.t1f}</span><div class="team-name">${m.t1}</div><div class="team-score">${m.t1s}</div><div class="team-overs">${m.t1o!=='—'?'('+m.t1o+' ov)':''}</div></div><div class="vs">VS</div><div class="team"><span class="team-flag">${m.t2f}</span><div class="team-name">${m.t2}</div><div class="team-score">${m.t2s}</div><div class="team-overs">${m.t2o!=='—'?'('+m.t2o+' ov)':''}</div></div></div><div class="match-result">${m.result}</div></div>`).join('');
+}
+function renderStandings(){
+  document.getElementById('standings').innerHTML='<div class="table-wrap"><table><thead><tr><th>#</th><th>Team</th><th>M</th><th>W</th><th>L</th><th>NRR</th><th>PTS</th></tr></thead><tbody>'+standings.map(s=>`<tr><td><div class="pos pos-${s.pos<=3?s.pos:''}">${s.pos}</div></td><td style="font-weight:600">${s.team}</td><td>${s.m}</td><td><span class="w-badge">${s.w}</span></td><td><span class="l-badge">${s.l}</span></td><td style="color:${s.nrr.startsWith('+')?'#22c55e':'#ef4444'}">${s.nrr}</td><td style="font-weight:700;color:#38bdf8">${s.pts}</td></tr>`).join('')+'</tbody></table></div>';
+}
+function renderPlayers(){
+  document.getElementById('players').innerHTML=players.map(p=>`<div class="player-card"><span class="player-avatar">${p.avatar}</span><div class="player-name">${p.name}</div><div class="player-team">${p.team}</div><span class="player-role">${p.role}</span><div class="player-stats">${p.runs!==undefined?`<div class="stat"><div class="stat-val">${p.runs}</div><div class="stat-label">Runs</div></div>`:''}${p.wkts!==undefined?`<div class="stat"><div class="stat-val">${p.wkts}</div><div class="stat-label">Wkts</div></div>`:''}${p.sr!==undefined?`<div class="stat"><div class="stat-val">${p.sr}</div><div class="stat-label">SR</div></div>`:''}</div></div>`).join('');
+}
+function showTab(t,el){['matches','standings','players'].forEach(x=>{document.getElementById('t-'+x).style.display=x===t?'block':'none';});document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+renderMatches();renderStandings();renderPlayers();
+</script>
+</body>
+</html>
